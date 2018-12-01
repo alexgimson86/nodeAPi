@@ -7,7 +7,10 @@ $(document).ready( () => {
   })
   .done((data) => {
     data.todoArray.forEach((todo)=>{
-      $('ul').append(`<li id=${todo.id}><span>X</span>${todo.description}</li>`)
+      if(!todo.isComplete)
+        $('ul').append(`<li id=${todo.id}><span>X</span>${todo.description}</li>`)
+      else
+      $('ul').append(`<li class=completed id=${todo.id}><span>X</span>${todo.description}</li>`)
     })
   })
   .fail(console.log('didnt work'));
@@ -15,6 +18,12 @@ $(document).ready( () => {
   //PUT (update completion status)
   $('ul').on('click', 'li', function(){
     $(this).toggleClass('completed');
+    const upLink = link + $(this).attr('id')
+    $.ajax({
+      url: upLink,
+      method: 'PUT'
+
+    })
   });
   //DELETE todo
   $('ul').on('click', 'span', function(event){
@@ -33,7 +42,7 @@ $(document).ready( () => {
       })
       .done((data)=>{
         data.todoArray.forEach((todo)=>{
-          todoList += `<li id =${todo.id}><span>X</span>${todo.description}</li>`;
+          todoList += `<li id =${todo.id}><span><i class='fa fa-times'></i></span>${todo.description}</li>`;
         })
         $('ul').innerHTML = todoList
       })
@@ -47,19 +56,26 @@ $(document).ready( () => {
     if(event.which===13 && $(this).val() !== ""){
       // we'll add here
       var todoItem = $(this).val();
-      $('ul').append(
-        "<li>" +
-        todoItem +
-        "<span>" +
-        "<i class='fa fa-times'></i>" +
-        "</span>" +
-        "</li>"
-        );
-      }
+        $.ajax({
+          url: link,
+          method: 'POST',
+          data: todoItem
+        })
+        .done(console.log('worked'))
+        .fail(console.log('post failes'))
+        $('ul').append(
+          "<li>" +
+          todoItem +
+          "<span>" +
+          "<i class='fa fa-times'></i>" +
+          "</span>" +
+          "</li>"
+          );
+        }
+      });
+      
+      $('input').keypress(function(event){
+        if(event.which===13)
+        $(this).val('');
+      });
     });
-    
-    $('input').keypress(function(event){
-      if(event.which===13)
-      $(this).val('');
-    });
-  });

@@ -7,8 +7,8 @@ const app = express();
 
 
 const port = 3000;
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.text())
 app.use(logger('dev'));
 app.use(cors());
 
@@ -41,11 +41,14 @@ app.delete('/todos/:id', (req,res)=> {
 var counter = 4;
 app.post('/todos', (req,res) => {
     counter++;
-    let newDescription = req.body.description.slice(0,100)
-    if(req.body.description){
-        let todo = {id: counter, description: newDescription, isComplete: false}
+    let newDescription = req.body
+    if(newDescription){
+        const key = Object.keys(newDescription)
+        exports.newDescription = key
+        let todo = {id: counter, description: exports.newDescription, isComplete: false}
         todoArray.push(todo)
-        res.send(todoArray)
+        exports.todoArray = todoArray
+        res.status(200).json({todoArray: exports.todoArray})
     }
 
     res.status(418).send()
@@ -54,7 +57,9 @@ app.post('/todos', (req,res) => {
 app.put('/todos/:id', (req,res)=>{
     let thisTodo = _.findWhere(todoArray,{id: parseInt(req.params.id)})
     thisTodo.isComplete = !thisTodo.isComplete 
-    res.send(todoArray)
+    //res.send(todoArray)
+    exports.todoArray = todoArray
+    res.status(200).json({todoArray: exports.todoArray})
 })
 app.listen(port,()=>{
     console.log(`listening on port ${port}`)
