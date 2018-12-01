@@ -4,13 +4,14 @@ const _ = require('underscore');
 const bodyParser  = require('body-parser');
 const cors = require('cors');
 const app = express();
-
+var mongoose = require("mongoose");
 
 const port = 3000;
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.text())
 app.use(logger('dev'));
 app.use(cors());
+mongoose.Promise = global.Promise;mongoose.connect("mongodb://localhost:27017/node-demo");
 
 
 
