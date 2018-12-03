@@ -74,11 +74,17 @@ app.post('/todos', (req,res) => {
 
 })
 app.put('/todos/:id', (req,res)=>{
-    let thisTodo = _.findWhere(todoArray,{id: parseInt(req.params.id)})
-    thisTodo.isComplete = !thisTodo.isComplete 
+    var query = { _id: req.params.id };
+    todoModel.findOneAndUpdate(query, { isComplete: true }, (err, docs)=>{
+        if (err) return console.error(err);
+        console.log(" updated to todo collection.");
+        res.status(200).send();
+        
+    })
     //res.send(todoArray)
-    exports.todoArray = todoArray
-    res.status(200).json({todoArray: exports.todoArray})
+    //exports.todoArray = todoArray
+    //res.status(200).json({todoArray: exports.todoArray})
+
 })
 app.listen(port,()=>{
     console.log(`listening on port ${port}`)
