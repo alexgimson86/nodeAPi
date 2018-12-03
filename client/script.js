@@ -8,9 +8,9 @@ $(document).ready( () => {
   .done((data) => {
     data.todoArray.forEach((todo)=>{
       if(!todo.isComplete)
-        $('ul').append(`<li id=${todo.id}><span>X</span>${todo.description}</li>`)
+        $('ul').append(`<li id=${todo._id}><span>X</span>${todo.description}</li>`)
       else
-      $('ul').append(`<li class=completed id=${todo.id}><span>X</span>${todo.description}</li>`)
+      $('ul').append(`<li class=completed id=${todo._id}><span>X</span>${todo.description}</li>`)
     })
   })
   .fail(console.log('didnt work'));
@@ -42,7 +42,7 @@ $(document).ready( () => {
       })
       .done((data)=>{
         data.todoArray.forEach((todo)=>{
-          todoList += `<li id =${todo.id}><span><i class='fa fa-times'></i></span>${todo.description}</li>`;
+          todoList += `<li id =${todo._id}><span><i class='fa fa-times'></i></span>${todo.description}</li>`;
         })
         $('ul').innerHTML = todoList
       })
@@ -61,16 +61,16 @@ $(document).ready( () => {
           method: 'POST',
           data: todoItem
         })
-        .done(console.log('worked'))
-        .fail(console.log('post failes'))
-        $('ul').append(
+        .done($('ul').append(
           "<li>" +
           todoItem +
           "<span>" +
           "<i class='fa fa-times'></i>" +
           "</span>" +
           "</li>"
-          );
+          ))
+        .fail(console.log('post failes'))
+        
         }
       });
       

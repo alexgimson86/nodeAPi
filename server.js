@@ -12,31 +12,46 @@ app.use(bodyParser.text())
 app.use(logger('dev'));
 app.use(cors());
 mongoose.Promise = global.Promise;mongoose.connect("mongodb://localhost:27017/node-demo");
-
-
-
-let todoArray = [
-     {id: 1, description: "Call Mom", isComplete: false},
-     {id:2 , description: "buy groceries", isComplete: false},
-     {id:3 , description: "go to movies", isComplete: false}
-]
-exports.todoArray = todoArray
+var ObjectID = require('mongodb').ObjectID;
+var todoSchema = new mongoose.Schema({
+    _id: String,
+    description: String,
+    isComplete: Boolean
+   });
+var todoModel = mongoose.model("todoModel", todoSchema);
+let todoArray = new Array()
+   
+//exports.todoArray = todoArra
 //get routes
 app.get('/todos', (req,res)=>{
-    res.status(200).json({todoArray: exports.todoArray})
+    todoArray = []
+   todoModel.find({}, (err,docs)=>{
+        if(err){
+            res.status(418).send() 
+        }
+        docs.forEach(function(todo){
+            var todoObj = {_id: todo.id, description: todo.description, isComplete: todo.isComplete}
+            todoArray.push(todoObj)
+        })
+        exports.todoArray = todoArray
+        res.status(200).json({todoArray: exports.todoArray})
+    })
+    //save values
 });
 app.delete('/todos/:id', (req,res)=> {
-    var newTodos = _.filter(todoArray, (todo)=>{ return todo.id != req.params.id; });
-    if(newTodos.length != todoArray.length){
-        todoArray = newTodos
-        exports.todoArray = newTodos
-
-        res.status(200).json({todoArray: exports.todoArray})
-    }
-    else(
-        res.status(418).send() 
-    )
-
+    todoArray = []
+    todoModel.deleteOne({ _id: req.params.id }, function (err) {
+        if (err) return handleError(err);
+        // deleted at most one tank document
+        todoModel.find({},(err,docs)=>{
+            if (err) return handleError(err);
+            docs.forEach(function(todo){
+                var todoObj = {_id: todo.id, description: todo.description, isComplete: todo.isComplete}
+                todoArray.push(todoObj)
+            })
+            res.status(200).json({todoArray: exports.todoArray})
+        })
+      });
 });
 //post
 var counter = 4;
@@ -46,10 +61,13 @@ app.post('/todos', (req,res) => {
     if(newDescription){
         const key = Object.keys(newDescription)
         exports.newDescription = key
-        let todo = {id: counter, description: exports.newDescription, isComplete: false}
-        todoArray.push(todo)
-        exports.todoArray = todoArray
-        res.status(200).json({todoArray: exports.todoArray})
+        let todo = new todoModel({_id: new ObjectID(), description: exports.newDescription, isComplete: false})
+        exports.todo = todo
+        todo.save(function (err, book) {
+            if (err) return console.error(err);
+            console.log(" saved to todo collection.");
+          });
+        res.status(200).send()
     }
 
     res.status(418).send()
