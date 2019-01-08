@@ -51,6 +51,7 @@ app.get('/todos/username/:name', (req,res)=>{
                     todos.todos t JOIN todos.users u ON (u.id = t.user_id)
                     WHERE username = '${req.params.name}';`;
     client.query(query ,(err,result)=>{
+<<<<<<< HEAD
         if(err){
             console.log(err.stack);
         }else{
@@ -62,6 +63,19 @@ app.get('/todos/username/:name', (req,res)=>{
 
   /* todoModel.find({}, (err,docs)=>{
         if(err){
+=======
+        if(err){
+            console.log(err.stack);
+        }else{
+            console.log(result.rows);
+            res.send(result.rows)
+        }
+    })
+});
+
+  /* todoModel.find({}, (err,docs)=>{
+        if(err){
+>>>>>>> fc4fe4ef4fdd85d45c9ceb439c61a6df8f26428e
             res.status(500).send() 
         }
         docs.forEach(function(todo){
@@ -72,6 +86,7 @@ app.get('/todos/username/:name', (req,res)=>{
         res.status(200).json({todoArray: exports.todoArray})
     })*/
     //save values
+<<<<<<< HEAD
     app.delete('/todos/username/:name/todo/:id',(req, res)=>{
         let query = `DELETE FROM todos.todos 
                     WHERE todos.id = ${req.params.id};`
@@ -83,6 +98,8 @@ app.get('/todos/username/:name', (req,res)=>{
             }
         })
     });
+=======
+>>>>>>> fc4fe4ef4fdd85d45c9ceb439c61a6df8f26428e
 //app.delete('/todos/:id', (req,res)=> {
     //todoArray = []
    /* todoModel.deleteOne({ _id: req.params.id }, function (err) {
@@ -123,6 +140,7 @@ app.post('/todos/username/:name', (req,res) => {
           });*/
     }
 })
+<<<<<<< HEAD
 app.put('/todos/username/:name/:id', (req,res)=>{
     let query = `UPDATE todos.todos SET iscomplete = NOT iscomplete WHERE todos.id = ${req.params.id}`
     client.query(query ,(err)=>{
@@ -133,6 +151,9 @@ app.put('/todos/username/:name/:id', (req,res)=>{
         }
     })
 });
+=======
+//app.put('/todos/:id', (req,res)=>{
+>>>>>>> fc4fe4ef4fdd85d45c9ceb439c61a6df8f26428e
   /*  var query = { _id: req.params.id };
     todoModel.findOneAndUpdate(query, { isComplete: true }, (err, docs)=>{
         if (err) return console.error(err);
